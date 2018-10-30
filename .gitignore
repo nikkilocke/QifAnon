@@ -1,0 +1,10 @@
+bin
+obj
+packages
+*.suo
+*.dll
+.vs
+*.user
+*.ifp
+*.exe
+*.cmd

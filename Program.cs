@@ -19,10 +19,8 @@ namespace QifAnon {
 		Regex isNumeric = new Regex(@"^[0-9\.,$£\-+]+$");
 		Regex notNumeric = new Regex("[^0-9]");
 		Regex notAlpha = new Regex("[^a-zA-Z]");
-		Regex isDate = new Regex(@"^ ?(\d+)/ ?(\d+)(['/]) ?(\d+)$");
 		Dictionary<string, string> numbers = new Dictionary<string, string>();
 		Dictionary<string, string> words = new Dictionary<string, string>();
-		Dictionary<string, string> dates = new Dictionary<string, string>();
 		Random random = new Random();
 		const string vowels = "aeiou";
 		const string consonants = "bcdfghjklmnpqrstvwxyz";
@@ -68,24 +66,7 @@ namespace QifAnon {
 		string Anonymise(string line) {
 			Func<char, bool> change;
 			string result;
-			if(isDate.IsMatch(line)) {
-				if (!dates.TryGetValue(line, out result)) {
-					Match match = isDate.Match(line);
-					int d = int.Parse(match.Groups[1].Value);
-					int m = int.Parse(match.Groups[2].Value);
-					int y = int.Parse(match.Groups[4].Value);
-					if (match.Groups[3].Value == "'")
-						y += 2000;
-					else if (y < 1000)
-						y += 1900;
-					d = random.Next(d > 12 ? 28 : 12) + 1;
-					m = random.Next(m > 12 ? 28 : 12) + 1;
-					y = 1900 + random.Next(118);
-					result = string.Format("{0:02}/{1:02}/{2}", d, m, y);
-					dates[line] = result;
-				}
-				return result;
-			} else if(isNumeric.IsMatch(line)) {
+			if(isNumeric.IsMatch(line)) {
 				string key = notNumeric.Replace(line, "");
 				if(!numbers.TryGetValue(key, out result)) {
 					char[] r = new char[key.Length];
